@@ -13,7 +13,6 @@ import { Route as WebsiteRouteImport } from './routes/website'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PaymentsRouteImport } from './routes/payments'
@@ -44,11 +43,6 @@ const SupportRoute = SupportRouteImport.update({
 const SubscriptionsRoute = SubscriptionsRouteImport.update({
   id: '/subscriptions',
   path: '/subscriptions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -119,7 +113,6 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/subscriptions': typeof SubscriptionsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
@@ -137,7 +130,6 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/subscriptions': typeof SubscriptionsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
@@ -156,7 +148,6 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
   '/settings': typeof SettingsRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/subscriptions': typeof SubscriptionsRoute
   '/support': typeof SupportRoute
   '/users': typeof UsersRoute
@@ -176,7 +167,6 @@ export interface FileRouteTypes {
     | '/payments'
     | '/security'
     | '/settings'
-    | '/sitemap.xml'
     | '/subscriptions'
     | '/support'
     | '/users'
@@ -194,7 +184,6 @@ export interface FileRouteTypes {
     | '/payments'
     | '/security'
     | '/settings'
-    | '/sitemap.xml'
     | '/subscriptions'
     | '/support'
     | '/users'
@@ -212,7 +201,6 @@ export interface FileRouteTypes {
     | '/payments'
     | '/security'
     | '/settings'
-    | '/sitemap.xml'
     | '/subscriptions'
     | '/support'
     | '/users'
@@ -231,7 +219,6 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   SecurityRoute: typeof SecurityRoute
   SettingsRoute: typeof SettingsRoute
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SubscriptionsRoute: typeof SubscriptionsRoute
   SupportRoute: typeof SupportRoute
   UsersRoute: typeof UsersRoute
@@ -266,13 +253,6 @@ declare module '@tanstack/react-router' {
       path: '/subscriptions'
       fullPath: '/subscriptions'
       preLoaderRoute: typeof SubscriptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -367,7 +347,6 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   SecurityRoute: SecurityRoute,
   SettingsRoute: SettingsRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SubscriptionsRoute: SubscriptionsRoute,
   SupportRoute: SupportRoute,
   UsersRoute: UsersRoute,
