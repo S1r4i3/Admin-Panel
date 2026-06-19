@@ -9,8 +9,98 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WebsiteRouteImport } from './routes/website'
+import { Route as UsersRouteImport } from './routes/users'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as SubscriptionsRouteImport } from './routes/subscriptions'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as CreditsRouteImport } from './routes/credits'
+import { Route as CmsRouteImport } from './routes/cms'
+import { Route as ApiKeysRouteImport } from './routes/api-keys'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AiJobsRouteImport } from './routes/ai-jobs'
+import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WebsiteRoute = WebsiteRouteImport.update({
+  id: '/website',
+  path: '/website',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubscriptionsRoute = SubscriptionsRouteImport.update({
+  id: '/subscriptions',
+  path: '/subscriptions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreditsRoute = CreditsRouteImport.update({
+  id: '/credits',
+  path: '/credits',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CmsRoute = CmsRouteImport.update({
+  id: '/cms',
+  path: '/cms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKeysRoute = ApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiJobsRoute = AiJobsRouteImport.update({
+  id: '/ai-jobs',
+  path: '/ai-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountsRoute = AccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +109,242 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/ai-jobs': typeof AiJobsRoute
+  '/analytics': typeof AnalyticsRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/cms': typeof CmsRoute
+  '/credits': typeof CreditsRoute
+  '/notifications': typeof NotificationsRoute
+  '/payments': typeof PaymentsRoute
+  '/security': typeof SecurityRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/support': typeof SupportRoute
+  '/users': typeof UsersRoute
+  '/website': typeof WebsiteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/ai-jobs': typeof AiJobsRoute
+  '/analytics': typeof AnalyticsRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/cms': typeof CmsRoute
+  '/credits': typeof CreditsRoute
+  '/notifications': typeof NotificationsRoute
+  '/payments': typeof PaymentsRoute
+  '/security': typeof SecurityRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/support': typeof SupportRoute
+  '/users': typeof UsersRoute
+  '/website': typeof WebsiteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/accounts': typeof AccountsRoute
+  '/ai-jobs': typeof AiJobsRoute
+  '/analytics': typeof AnalyticsRoute
+  '/api-keys': typeof ApiKeysRoute
+  '/cms': typeof CmsRoute
+  '/credits': typeof CreditsRoute
+  '/notifications': typeof NotificationsRoute
+  '/payments': typeof PaymentsRoute
+  '/security': typeof SecurityRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/subscriptions': typeof SubscriptionsRoute
+  '/support': typeof SupportRoute
+  '/users': typeof UsersRoute
+  '/website': typeof WebsiteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/accounts'
+    | '/ai-jobs'
+    | '/analytics'
+    | '/api-keys'
+    | '/cms'
+    | '/credits'
+    | '/notifications'
+    | '/payments'
+    | '/security'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/subscriptions'
+    | '/support'
+    | '/users'
+    | '/website'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/accounts'
+    | '/ai-jobs'
+    | '/analytics'
+    | '/api-keys'
+    | '/cms'
+    | '/credits'
+    | '/notifications'
+    | '/payments'
+    | '/security'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/subscriptions'
+    | '/support'
+    | '/users'
+    | '/website'
+  id:
+    | '__root__'
+    | '/'
+    | '/accounts'
+    | '/ai-jobs'
+    | '/analytics'
+    | '/api-keys'
+    | '/cms'
+    | '/credits'
+    | '/notifications'
+    | '/payments'
+    | '/security'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/subscriptions'
+    | '/support'
+    | '/users'
+    | '/website'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountsRoute: typeof AccountsRoute
+  AiJobsRoute: typeof AiJobsRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  ApiKeysRoute: typeof ApiKeysRoute
+  CmsRoute: typeof CmsRoute
+  CreditsRoute: typeof CreditsRoute
+  NotificationsRoute: typeof NotificationsRoute
+  PaymentsRoute: typeof PaymentsRoute
+  SecurityRoute: typeof SecurityRoute
+  SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SubscriptionsRoute: typeof SubscriptionsRoute
+  SupportRoute: typeof SupportRoute
+  UsersRoute: typeof UsersRoute
+  WebsiteRoute: typeof WebsiteRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/website': {
+      id: '/website'
+      path: '/website'
+      fullPath: '/website'
+      preLoaderRoute: typeof WebsiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/subscriptions': {
+      id: '/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/subscriptions'
+      preLoaderRoute: typeof SubscriptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/credits': {
+      id: '/credits'
+      path: '/credits'
+      fullPath: '/credits'
+      preLoaderRoute: typeof CreditsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cms': {
+      id: '/cms'
+      path: '/cms'
+      fullPath: '/cms'
+      preLoaderRoute: typeof CmsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api-keys': {
+      id: '/api-keys'
+      path: '/api-keys'
+      fullPath: '/api-keys'
+      preLoaderRoute: typeof ApiKeysRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-jobs': {
+      id: '/ai-jobs'
+      path: '/ai-jobs'
+      fullPath: '/ai-jobs'
+      preLoaderRoute: typeof AiJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accounts': {
+      id: '/accounts'
+      path: '/accounts'
+      fullPath: '/accounts'
+      preLoaderRoute: typeof AccountsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,17 +357,22 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountsRoute: AccountsRoute,
+  AiJobsRoute: AiJobsRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  ApiKeysRoute: ApiKeysRoute,
+  CmsRoute: CmsRoute,
+  CreditsRoute: CreditsRoute,
+  NotificationsRoute: NotificationsRoute,
+  PaymentsRoute: PaymentsRoute,
+  SecurityRoute: SecurityRoute,
+  SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SubscriptionsRoute: SubscriptionsRoute,
+  SupportRoute: SupportRoute,
+  UsersRoute: UsersRoute,
+  WebsiteRoute: WebsiteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

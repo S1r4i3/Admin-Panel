@@ -77,16 +77,42 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "SmartLogix AI Admin Dashboard" },
+      {
+        name: "description",
+        content:
+          "Enterprise SaaS admin dashboard for SmartLogix AI with analytics, subscriptions, payments, CMS, notifications, and operations views.",
+      },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "SmartLogix AI Admin Dashboard" },
+      {
+        property: "og:description",
+        content:
+          "Production-style SmartLogix AI control center with premium charts, tables, forms, and workspace management.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "SmartLogix AI Admin Dashboard" },
+      {
+        name: "twitter:description",
+        content:
+          "A world-class enterprise SaaS admin dashboard experience built in React, TypeScript, and Tailwind.",
+      },
     ],
     links: [
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
