@@ -1,29 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { AppShell } from "@/components/dashboard/app-shell";
+import {
+  BottomOverview,
+  KPIFooter,
+  MetricCards,
+  OverviewCharts,
+} from "@/components/dashboard/dashboard-widgets";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Dashboard — SmartLogix AI" },
+      { name: "description", content: "SmartLogix AI enterprise dashboard overview with KPIs, charts, platform health, and activity." },
+      { property: "og:title", content: "Dashboard — SmartLogix AI" },
+      { property: "og:description", content: "Enterprise dashboard overview for SmartLogix AI." },
     ],
   }),
-  component: Index,
+  component: DashboardPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function DashboardPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <AppShell title="Dashboard" subtitle="Welcome back. Here's what's happening with your platform.">
+      <div className="space-y-4">
+        <MetricCards />
+        <OverviewCharts />
+        <BottomOverview />
+        <KPIFooter />
+      </div>
+    </AppShell>
   );
 }
