@@ -10,7 +10,7 @@ function AccountsPage() {
   return (
     <AppShell
       title="Accounts"
-      subtitle="Organize customer accounts and workspace ownership."
+      subtitle="Organization"
     >
       <UserManagementSection />
     </AppShell>

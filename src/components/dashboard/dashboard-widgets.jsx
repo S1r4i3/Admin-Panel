@@ -24,6 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { accountSummary, aiJobs, apiKeys, cmsSummary, contentRows, creditPurchases, formatCompactNumber, healthChecks, kpiStrip, metricCards, notifications, paymentMethodBreakdown, planCards, recentActivities, realtimeFeed, securityLogs, settingsTabs, subscriptionBreakdown, subscriptions, transactions, trendData, users, } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
+import { useAIJobs, useCMSContent, useDashboardData, useNotifications, usePlans, useSubscriptions, useTransactions, useUsers } from "@/services/dashboard";
 function toneClasses(tone) {
     switch (tone) {
         case "primary":
@@ -59,8 +60,14 @@ function initials(value) {
         .toUpperCase();
 }
 export function MetricCards() {
+    const { data: dashboardData } = useDashboardData();
+    const cards = (dashboardData?.metricCards ?? metricCards).map((card, index) => ({
+        ...metricCards[index],
+        ...card,
+        icon: metricCards[index]?.icon ?? metricCards[0].icon,
+    }));
     return (<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {metricCards.map((card, index) => {
+      {cards.map((card, index) => {
             const Icon = card.icon;
             return (<motion.div key={card.title} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05, duration: 0.25 }}>
             <Card className="glass-panel mesh-border rounded-[28px] border-border/60 bg-card/70">
@@ -88,6 +95,9 @@ export function MetricCards() {
     </div>);
 }
 export function OverviewCharts() {
+    const { data: dashboardData } = useDashboardData();
+    const chartData = dashboardData?.trendData ?? trendData;
+    const liveFeed = dashboardData?.realtimeFeed?.length ? dashboardData.realtimeFeed : realtimeFeed;
     const chartConfig = {
         revenue: { label: "Revenue", color: "var(--color-chart-1)" },
         users: { label: "Users", color: "var(--color-chart-2)" },
@@ -113,7 +123,7 @@ export function OverviewCharts() {
         </CardHeader>
         <CardContent className="pt-2">
           <ChartContainer config={chartConfig} className="h-[320px] w-full">
-            <LineChart data={trendData}>
+            <LineChart data={chartData}>
               <CartesianGrid vertical={false} strokeDasharray="4 4"/>
               <XAxis dataKey="name" tickLine={false} axisLine={false}/>
               <YAxis tickLine={false} axisLine={false} width={44}/>
@@ -159,7 +169,7 @@ export function OverviewCharts() {
           <Badge className="rounded-full bg-success/12 text-success">Live</Badge>
         </CardHeader>
         <CardContent className="space-y-3 pt-0">
-          {realtimeFeed.map((item) => (<div key={item.title + item.time} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/20 p-3">
+          {liveFeed.map((item) => (<div key={item.title + item.time} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/20 p-3">
               <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border", toneClasses(item.tone))}>
                 {item.tone === "danger" ? <AlertTriangle className="h-5 w-5"/> : <Sparkles className="h-5 w-5"/>}
               </div>
@@ -315,6 +325,8 @@ function TableToolbar({ placeholder, action, }) {
     </div>);
 }
 export function UserManagementSection() {
+    const { data: usersData = users, isError, isLoading } = useUsers();
+    const tableData = Array.isArray(usersData) ? usersData : usersData?.items ?? users;
     const columns = useMemo(() => [
         {
             id: "select",
@@ -365,11 +377,15 @@ export function UserManagementSection() {
       </CardHeader>
       <CardContent>
         <TableToolbar placeholder="Search users by name, email or role..." action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Filters</Button>}/>
-        <DataTable data={users} columns={columns}/>
+        {isError ? <p className="mb-3 text-sm text-destructive">Could not load live users. Showing local preview data.</p> : null}
+        {isLoading ? <Skeleton className="mb-3 h-10 w-full rounded-2xl"/> : null}
+        <DataTable data={tableData} columns={columns}/>
       </CardContent>
     </Card>);
 }
 export function AIJobsSection() {
+    const { data: jobsData = aiJobs, isError, isLoading } = useAIJobs();
+    const tableData = Array.isArray(jobsData) ? jobsData : jobsData?.items ?? aiJobs;
     const columns = useMemo(() => [
         { accessorKey: "id", header: "Job ID" },
         {
@@ -469,7 +485,9 @@ export function AIJobsSection() {
         </CardHeader>
         <CardContent>
           <TableToolbar placeholder="Search jobs by name, ID or user..." action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Filters</Button>}/>
-          <DataTable data={aiJobs} columns={columns}/>
+          {isError ? <p className="mb-3 text-sm text-destructive">Could not load live AI jobs. Showing local preview data.</p> : null}
+          {isLoading ? <Skeleton className="mb-3 h-10 w-full rounded-2xl"/> : null}
+          <DataTable data={tableData} columns={columns}/>
         </CardContent>
       </Card>
     </div>);
@@ -578,6 +596,8 @@ export function AnalyticsSection() {
     </div>);
 }
 export function CMSSection() {
+    const { data: cmsData = contentRows, isError, isLoading } = useCMSContent();
+    const tableData = Array.isArray(cmsData) ? cmsData : cmsData?.items ?? contentRows;
     const columns = useMemo(() => [
         {
             accessorKey: "title",
@@ -625,7 +645,9 @@ export function CMSSection() {
                 </TabsList>
               </Tabs>
             </div>
-            <DataTable data={contentRows} columns={columns}/>
+            {isError ? <p className="mb-3 text-sm text-destructive">Could not load live CMS content. Showing local preview data.</p> : null}
+            {isLoading ? <Skeleton className="mb-3 h-10 w-full rounded-2xl"/> : null}
+            <DataTable data={tableData} columns={columns}/>
           </CardContent>
         </Card>
 
@@ -672,6 +694,8 @@ export function CMSSection() {
     </div>);
 }
 export function PaymentsSection() {
+    const { data: transactionData = transactions, isError, isLoading } = useTransactions();
+    const tableData = Array.isArray(transactionData) ? transactionData : transactionData?.items ?? transactions;
     const columns = useMemo(() => [
         { accessorKey: "id", header: "Transaction ID" },
         {
@@ -784,12 +808,30 @@ export function PaymentsSection() {
         </CardHeader>
         <CardContent>
           <TableToolbar placeholder="Search transactions..." action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Filters</Button>}/>
-          <DataTable data={transactions} columns={columns}/>
+          {isError ? <p className="mb-3 text-sm text-destructive">Could not load live transactions. Showing local preview data.</p> : null}
+          {isLoading ? <Skeleton className="mb-3 h-10 w-full rounded-2xl"/> : null}
+          <DataTable data={tableData} columns={columns}/>
         </CardContent>
       </Card>
     </div>);
 }
 export function SubscriptionSection() {
+    const { data: planData = planCards } = usePlans();
+    const { data: subscriptionData = subscriptions, isError, isLoading } = useSubscriptions();
+    const plans = (Array.isArray(planData) ? planData : planData?.items ?? planCards).map((plan, index) => ({
+        ...planCards[index],
+        ...plan,
+        price: typeof plan.price === "number" ? `₹${plan.price.toLocaleString()}` : plan.price,
+        subscribers: plan.subscribers ?? 0,
+    }));
+    const tableData = (Array.isArray(subscriptionData) ? subscriptionData : subscriptionData?.items ?? subscriptions).map((subscription) => ({
+        ...subscription,
+        subscriber: subscription.subscriber ?? subscription.user?.name ?? "Subscriber",
+        email: subscription.email ?? subscription.user?.email ?? "",
+        plan: subscription.plan?.name ?? subscription.plan ?? "Plan",
+        renewalDate: subscription.renewalDate ?? subscription.currentPeriodEnd ?? "-",
+        amount: subscription.amount ?? (subscription.plan?.price ? `₹${subscription.plan.price}` : "-"),
+    }));
     const columns = useMemo(() => [
         {
             accessorKey: "subscriber",
@@ -815,7 +857,7 @@ export function SubscriptionSection() {
             <Button className="rounded-2xl"><Plus className="h-4 w-4"/> Create New Plan</Button>
           </CardHeader>
           <CardContent className="grid gap-4 lg:grid-cols-3">
-            {planCards.map((plan) => (<div key={plan.name} className={cn("glass-panel relative rounded-[28px] p-5", plan.featured && "shadow-[var(--shadow-glow)]")}>
+            {plans.map((plan) => (<div key={plan.name} className={cn("glass-panel relative rounded-[28px] p-5", plan.featured && "shadow-[var(--shadow-glow)]")}>
                 {plan.featured ? <Badge className="absolute right-4 top-4 rounded-full">Most Popular</Badge> : null}
                 <p className="text-xl font-semibold text-foreground">{plan.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{plan.description}</p>
@@ -884,13 +926,22 @@ export function SubscriptionSection() {
         </CardHeader>
         <CardContent>
           <TableToolbar placeholder="Search subscribers..." action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Export</Button>}/>
-          <DataTable data={subscriptions} columns={columns}/>
+          {isError ? <p className="mb-3 text-sm text-destructive">Could not load live subscriptions. Showing local preview data.</p> : null}
+          {isLoading ? <Skeleton className="mb-3 h-10 w-full rounded-2xl"/> : null}
+          <DataTable data={tableData} columns={columns}/>
         </CardContent>
       </Card>
     </div>);
 }
 export function NotificationSection() {
-    const [selected, setSelected] = useState(notifications[0]);
+    const { data: notificationData = notifications } = useNotifications();
+    const notificationRows = (Array.isArray(notificationData) ? notificationData : notificationData?.items ?? notifications).map((item) => ({
+        ...item,
+        time: item.time ?? item.createdAt ?? "",
+        badge: item.badge ?? item.type ?? "System",
+        tone: item.tone ?? "primary",
+    }));
+    const [selected, setSelected] = useState(notificationRows[0]);
     return (<div className="grid gap-4 xl:grid-cols-[1.35fr_0.8fr]">
       <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
         <CardHeader className="space-y-4">
@@ -933,7 +984,7 @@ export function NotificationSection() {
           </div>
 
           <div className="space-y-4">
-            {notifications.map((item) => (<button key={item.title + item.time} onClick={() => setSelected(item)} className={cn("flex w-full items-start gap-4 rounded-[24px] border p-4 text-left transition-all", selected.title === item.title
+            {notificationRows.map((item) => (<button key={item.title + item.time} onClick={() => setSelected(item)} className={cn("flex w-full items-start gap-4 rounded-[24px] border p-4 text-left transition-all", selected.title === item.title
                 ? "border-primary/40 bg-primary/8 shadow-[var(--shadow-glow)]"
                 : "border-border/60 bg-background/10 hover:bg-accent/40")}>
                 <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border", toneClasses(item.tone))}>
