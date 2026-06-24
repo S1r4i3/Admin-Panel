@@ -10,6 +10,14 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://BACKEND_IP:8000", // ← replace BACKEND_IP with the backend laptop's IP
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     TanStackRouterVite({
       target: "react",

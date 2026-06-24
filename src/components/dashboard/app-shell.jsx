@@ -1,4 +1,4 @@
-import { Link, useLocation} from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, CalendarRange, ChevronDown, ChevronLeft, Command, Download, Menu, Moon, Search, Sparkles, SunMedium, } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,6 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { accountSummary, navItems, systemStatusCard } from "@/lib/dashboard-data";
 import { useDashboardStore } from "@/lib/dashboard-store";
+import { useAuth } from "@/hooks/useAuth";
 
 function SmartLogixMark({ collapsed }) {
   if (collapsed) {
@@ -187,8 +188,15 @@ function SidebarContent({ mobile = false }) {
 
 function TopBar({ title, subtitle, actions }) {
   const { theme, toggleTheme } = useDashboardStore();
-  const displayName = accountSummary.adminName;
-  const displayRole = accountSummary.adminRole;
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const displayName = user?.username ?? accountSummary.adminName;
+  const displayRole = user?.email ?? accountSummary.adminRole;
+
+  async function handleLogout() {
+    await logout();
+    navigate({ to: "/login" });
+  }
 
   return (
     <header className="sticky top-0 z-30 mb-6 glass-panel rounded-[28px] px-4 py-4 sm:px-6">
@@ -252,6 +260,10 @@ function TopBar({ title, subtitle, actions }) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={toggleTheme}>Toggle theme</DropdownMenuItem>
                 <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={handleLogout} className="text-destructive focus:text-destructive">
+                  Sign out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button className="rounded-2xl px-5 shadow-[var(--shadow-glow)]">
@@ -267,6 +279,13 @@ function TopBar({ title, subtitle, actions }) {
 
 export function AppShell({ title, subtitle, actions, children }) {
   const { theme, sidebarCollapsed } = useDashboardStore();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  if (!isAuthenticated) {
+    navigate({ to: "/login" });
+    return null;
+  }
 
   return (
     <div className={cn("min-h-screen bg-background text-foreground", theme === "dark" ? "dark" : "")}>

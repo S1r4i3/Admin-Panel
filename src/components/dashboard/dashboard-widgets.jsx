@@ -160,36 +160,11 @@ export function OverviewCharts() {
         </CardContent>
       </Card>
 
-      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
-        <CardHeader className="flex-row items-start justify-between space-y-0">
-          <div>
-            <CardTitle>Real-time Activity</CardTitle>
-            <CardDescription>Live operational updates</CardDescription>
-          </div>
-          <Badge className="rounded-full bg-success/12 text-success">Live</Badge>
-        </CardHeader>
-        <CardContent className="space-y-3 pt-0">
-          {liveFeed.map((item) => (<div key={item.title + item.time} className="flex items-start gap-3 rounded-2xl border border-border/60 bg-background/20 p-3">
-              <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border", toneClasses(item.tone))}>
-                {item.tone === "danger" ? <AlertTriangle className="h-5 w-5"/> : <Sparkles className="h-5 w-5"/>}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-medium text-foreground">{item.title}</p>
-                  <span className="text-xs text-muted-foreground">{item.time}</span>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
-              </div>
-            </div>))}
-          <Button variant="ghost" className="w-full justify-between rounded-2xl border border-border/60 bg-background/15">
-            View All Activity <ChevronRight className="h-4 w-4"/>
-          </Button>
-        </CardContent>
-      </Card>
+      
     </div>);
 }
 export function BottomOverview() {
-    return (<div className="grid gap-4 xl:grid-cols-[1.1fr_1.1fr_0.9fr]">
+    return (<div className="grid gap-4 xl:grid-cols-[1.4fr_1fr_0.9fr] items-start">
       <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
         <CardHeader className="flex-row items-start justify-between space-y-0">
           <div>
@@ -1327,6 +1302,212 @@ export function SettingsSection() {
         </Card>
       </div>
     </div>);
+}
+export function SupportSection() {
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: 'Open Tickets',    value: '24',  delta: '-3 vs yesterday' },
+          { label: 'Resolved Today',  value: '18',  delta: '+6 vs yesterday' },
+          { label: 'Avg Response',    value: '2.4h', delta: '-0.6h vs last week' },
+          { label: 'Satisfaction',    value: '94%', delta: '+2% vs last month' },
+        ].map((item) => (
+          <Card key={item.label} className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">{item.label}</p>
+              <p className="mt-3 text-4xl font-semibold text-foreground">{item.value}</p>
+              <p className="mt-3 text-sm text-success">{item.delta}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+        <CardHeader className="flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Support Tickets</CardTitle>
+            <CardDescription>Manage and resolve customer issues</CardDescription>
+          </div>
+          <Button className="rounded-2xl"><Plus className="h-4 w-4" /> New Ticket</Button>
+        </CardHeader>
+        <CardContent>
+          <TableToolbar
+            placeholder="Search tickets by ID, user or subject..."
+            action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Filters</Button>}
+          />
+          <DataTable
+            data={[
+              { id: '#TKT-001', subject: 'Payment failed on checkout',  user: 'john@acme.com',  priority: 'High',   status: 'Active',    created: '2h ago' },
+              { id: '#TKT-002', subject: 'Cannot access API dashboard',  user: 'sara@corp.io',   priority: 'Medium', status: 'Active',    created: '4h ago' },
+              { id: '#TKT-003', subject: 'Subscription not upgrading',   user: 'mike@startup.co',priority: 'High',   status: 'Pending',   created: '6h ago' },
+              { id: '#TKT-004', subject: 'Export report is broken',      user: 'lisa@tech.com',  priority: 'Low',    status: 'Active',    created: '1d ago' },
+              { id: '#TKT-005', subject: 'Billing invoice missing',      user: 'raj@dev.in',     priority: 'Medium', status: 'Completed', created: '2d ago' },
+            ]}
+            columns={[
+              { accessorKey: 'id', header: 'Ticket ID' },
+              {
+                accessorKey: 'subject',
+                header: 'Subject',
+                cell: ({ row }) => (
+                  <p className="font-medium text-foreground">{row.original.subject}</p>
+                ),
+              },
+              { accessorKey: 'user', header: 'User' },
+              {
+                accessorKey: 'priority',
+                header: 'Priority',
+                cell: ({ row }) => (
+                  <Badge className={cn('rounded-full border', {
+                    'bg-destructive/12 text-destructive border-destructive/20': row.original.priority === 'High',
+                    'bg-warning/12 text-warning border-warning/20':             row.original.priority === 'Medium',
+                    'bg-primary/12 text-primary border-primary/20':             row.original.priority === 'Low',
+                  })}>
+                    {row.original.priority}
+                  </Badge>
+                ),
+              },
+              {
+                accessorKey: 'status',
+                header: 'Status',
+                cell: ({ row }) => (
+                  <Badge className={cn('rounded-full border', statusBadge(row.original.status))}>
+                    {row.original.status}
+                  </Badge>
+                ),
+              },
+              { accessorKey: 'created', header: 'Created' },
+              {
+                id: 'actions',
+                header: 'Actions',
+                cell: () => (
+                  <Button variant="ghost" size="icon" className="rounded-xl border border-border/60 bg-background/10">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                ),
+              },
+            ]}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+export function WebsiteSection() {
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: 'Total Pages',    value: '124',    delta: '+4 this week' },
+          { label: 'Published',      value: '98',     delta: '+2 today' },
+          { label: 'Drafts',         value: '18',     delta: '3 pending review' },
+          { label: 'Avg Load Time',  value: '1.2s',   delta: '-0.3s vs last week' },
+        ].map((item) => (
+          <Card key={item.label} className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">{item.label}</p>
+              <p className="mt-3 text-4xl font-semibold text-foreground">{item.value}</p>
+              <p className="mt-3 text-sm text-success">{item.delta}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[1.4fr_0.6fr]">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle>Pages</CardTitle>
+              <CardDescription>All website pages and their status</CardDescription>
+            </div>
+            <Button className="rounded-2xl"><Plus className="h-4 w-4" /> New Page</Button>
+          </CardHeader>
+          <CardContent>
+            <TableToolbar
+              placeholder="Search pages..."
+              action={<Button variant="outline" className="rounded-2xl border-border/60 bg-background/10">Filters</Button>}
+            />
+            <DataTable
+              data={[
+                { title: 'Home',       slug: '/',           status: 'Published', updatedAt: 'Today' },
+                { title: 'About',      slug: '/about',      status: 'Published', updatedAt: 'Yesterday' },
+                { title: 'Pricing',    slug: '/pricing',    status: 'Published', updatedAt: '2 days ago' },
+                { title: 'Blog',       slug: '/blog',       status: 'Published', updatedAt: '3 days ago' },
+                { title: 'Contact',    slug: '/contact',    status: 'Draft',     updatedAt: '5 days ago' },
+                { title: 'Careers',    slug: '/careers',    status: 'Draft',     updatedAt: '1 week ago' },
+              ]}
+              columns={[
+                {
+                  accessorKey: 'title',
+                  header: 'Page',
+                  cell: ({ row }) => (
+                    <div>
+                      <p className="font-medium text-foreground">{row.original.title}</p>
+                      <p className="text-sm text-muted-foreground">{row.original.slug}</p>
+                    </div>
+                  ),
+                },
+                {
+                  accessorKey: 'status',
+                  header: 'Status',
+                  cell: ({ row }) => (
+                    <Badge className={cn('rounded-full border', statusBadge(row.original.status))}>
+                      {row.original.status}
+                    </Badge>
+                  ),
+                },
+                { accessorKey: 'updatedAt', header: 'Last Updated' },
+                {
+                  id: 'actions',
+                  header: 'Actions',
+                  cell: () => (
+                    <Button variant="ghost" size="icon" className="rounded-xl border border-border/60 bg-background/10">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+          </CardContent>
+        </Card>
+
+        <div className="space-y-4">
+          <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+            <CardHeader>
+              <CardTitle>Site Health</CardTitle>
+              <CardDescription>Live checks</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              {[
+                ['SSL Certificate',  'Valid'],
+                ['Uptime',           'Operational'],
+                ['CDN',              'Operational'],
+                ['DNS',              'Operational'],
+                ['Sitemap',          'Operational'],
+              ].map(([label, status]) => (
+                <div key={label} className="flex items-center justify-between rounded-2xl border border-border/60 bg-background/10 px-4 py-3">
+                  <span className="text-sm text-foreground">{label}</span>
+                  <Badge className="rounded-full bg-success/12 text-success">{status}</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+            <CardHeader><CardTitle>Quick Actions</CardTitle></CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              {['Publish All Drafts', 'Clear CDN Cache', 'Rebuild Sitemap', 'Preview Site'].map((item) => (
+                <Button key={item} variant="outline" className="w-full justify-start rounded-2xl border-border/60 bg-background/10">
+                  {item}
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
 }
 export function PlaceholderSection({ title, description, }) {
     return (<Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">

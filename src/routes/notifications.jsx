@@ -5,3 +5,4 @@ export const Route = createFileRoute("/notifications")({ component: Notification
 function NotificationsPage() {
     return <AppShell title="Notification Center" subtitle=""><NotificationSection /></AppShell>;
 }
+    

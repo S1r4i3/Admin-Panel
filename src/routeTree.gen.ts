@@ -17,6 +17,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as CmsRouteImport } from './routes/cms'
 import { Route as ApiKeysRouteImport } from './routes/api-keys'
@@ -65,6 +66,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreditsRoute = CreditsRouteImport.update({
   id: '/credits',
   path: '/credits',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/api-keys': typeof ApiKeysRoute
   '/cms': typeof CmsRoute
   '/credits': typeof CreditsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/api-keys': typeof ApiKeysRoute
   '/cms': typeof CmsRoute
   '/credits': typeof CreditsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/api-keys': typeof ApiKeysRoute
   '/cms': typeof CmsRoute
   '/credits': typeof CreditsRoute
+  '/login': typeof LoginRoute
   '/notifications': typeof NotificationsRoute
   '/payments': typeof PaymentsRoute
   '/security': typeof SecurityRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/api-keys'
     | '/cms'
     | '/credits'
+    | '/login'
     | '/notifications'
     | '/payments'
     | '/security'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/api-keys'
     | '/cms'
     | '/credits'
+    | '/login'
     | '/notifications'
     | '/payments'
     | '/security'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/api-keys'
     | '/cms'
     | '/credits'
+    | '/login'
     | '/notifications'
     | '/payments'
     | '/security'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   ApiKeysRoute: typeof ApiKeysRoute
   CmsRoute: typeof CmsRoute
   CreditsRoute: typeof CreditsRoute
+  LoginRoute: typeof LoginRoute
   NotificationsRoute: typeof NotificationsRoute
   PaymentsRoute: typeof PaymentsRoute
   SecurityRoute: typeof SecurityRoute
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/credits': {
       id: '/credits'
       path: '/credits'
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiKeysRoute: ApiKeysRoute,
   CmsRoute: CmsRoute,
   CreditsRoute: CreditsRoute,
+  LoginRoute: LoginRoute,
   NotificationsRoute: NotificationsRoute,
   PaymentsRoute: PaymentsRoute,
   SecurityRoute: SecurityRoute,

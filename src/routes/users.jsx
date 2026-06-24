@@ -6,5 +6,5 @@ export const Route = createFileRoute("/users")({
     component: UsersPage,
 });
 function UsersPage() {
-    return <AppShell title="User Management" subtitle="Manage users, roles and permissions across your platform."><UserManagementSection /></AppShell>;
+    return <AppShell title="User Management" subtitle="Manage users and roles."><UserManagementSection /></AppShell>;
 }
