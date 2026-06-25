@@ -96,7 +96,8 @@ export function MetricCards() {
 }
 export function OverviewCharts() {
     const { data: dashboardData } = useDashboardData();
-    const chartData = dashboardData?.trendData ?? trendData;
+    const chartData = dashboardData?.trend ?? dashboardData?.trendData ?? trendData;
+    const subBreakdown = dashboardData?.subBreakdown ?? subscriptionBreakdown;
     const liveFeed = dashboardData?.realtimeFeed?.length ? dashboardData.realtimeFeed : realtimeFeed;
     const chartConfig = {
         revenue: { label: "Revenue", color: "var(--color-chart-1)" },
@@ -104,8 +105,8 @@ export function OverviewCharts() {
         subscriptions: { label: "Subscriptions", color: "var(--color-chart-3)" },
         aiUsage: { label: "AI Usage", color: "var(--color-chart-4)" },
     };
-    return (<div className="grid gap-4 xl:grid-cols-[1.4fr_1fr_0.9fr]">
-      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 xl:col-span-1">
+    return (<div className="grid gap-4 xl:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
+      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
         <CardHeader className="flex-row items-start justify-between space-y-0">
           <div>
             <CardTitle>Revenue Overview</CardTitle>
@@ -134,13 +135,13 @@ export function OverviewCharts() {
         </CardContent>
       </Card>
 
-      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
         <CardHeader className="flex-row items-start justify-between space-y-0">
           <div>
             <CardTitle>Subscription Analytics</CardTitle>
             <CardDescription>Distribution by plan</CardDescription>
           </div>
-          <Badge className="rounded-full bg-primary/12 text-primary">This Week</Badge>
+          <Badge className="rounded-full bg-primary/12 text-primary shrink-0">This Week</Badge>
         </CardHeader>
         <CardContent className="pt-0">
           <ChartContainer config={{
@@ -148,23 +149,23 @@ export function OverviewCharts() {
             Pro: { label: "Pro", color: "var(--color-chart-1)" },
             Enterprise: { label: "Enterprise", color: "var(--color-chart-3)" },
             Custom: { label: "Custom", color: "var(--color-chart-4)" },
-        }} className="h-[320px]">
+        }} className="h-[320px] w-full">
             <PieChart>
               <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
-              <Pie data={subscriptionBreakdown} dataKey="value" nameKey="name" innerRadius={68} outerRadius={108} strokeWidth={0}>
-                {subscriptionBreakdown.map((entry) => (<Cell key={entry.name} fill={entry.fill}/>))}
+              <Pie data={subBreakdown} dataKey="value" nameKey="name" innerRadius={68} outerRadius={108} strokeWidth={0}>
+                {subBreakdown.map((entry) => (<Cell key={entry.name} fill={entry.fill}/>))}
               </Pie>
               <Legend content={<ChartLegendContent className="gap-4"/>}/>
             </PieChart>
           </ChartContainer>
         </CardContent>
       </Card>
-
-      
     </div>);
 }
 export function BottomOverview() {
-    return (<div className="grid gap-4 xl:grid-cols-[1.4fr_1fr_0.9fr] items-start">
+    const { data: dashboardData } = useDashboardData();
+    const activities = dashboardData?.recentActivities ?? recentActivities;
+    return (<div className="grid gap-4 xl:grid-cols-[1.4fr_1fr_0.9fr] items-start [&>*]:min-w-0">
       <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
         <CardHeader className="flex-row items-start justify-between space-y-0">
           <div>
@@ -174,7 +175,7 @@ export function BottomOverview() {
           <Button variant="ghost" className="rounded-2xl border border-border/60 bg-background/10">View all</Button>
         </CardHeader>
         <CardContent className="space-y-3 pt-0">
-          {recentActivities.map((item) => (<div key={item.title + item.time} className="flex items-start gap-3 border-b border-border/50 pb-3 last:border-b-0 last:pb-0">
+          {activities.map((item) => (<div key={item.title + item.time} className="flex items-start gap-3 border-b border-border/50 pb-3 last:border-b-0 last:pb-0">
               <div className={cn("mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl border", toneClasses(item.tone))}>
                 <Sparkles className="h-4 w-4"/>
               </div>
@@ -244,9 +245,11 @@ export function BottomOverview() {
     </div>);
 }
 export function KPIFooter() {
+    const { data: dashboardData } = useDashboardData();
+    const kpis = dashboardData?.kpiStrip ?? kpiStrip;
     return (<Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
       <CardContent className="grid gap-4 p-0 sm:grid-cols-2 xl:grid-cols-5">
-        {kpiStrip.map((item, index) => (<div key={item.label} className={cn("p-5", index < kpiStrip.length - 1 && "border-b border-border/50 xl:border-b-0 xl:border-r")}>
+        {kpis.map((item, index) => (<div key={item.label} className={cn("p-5", index < kpis.length - 1 && "border-b border-border/50 xl:border-b-0 xl:border-r")}>
             <p className="text-sm text-muted-foreground">{item.label}</p>
             <p className="mt-3 text-4xl font-semibold text-foreground">{item.value}</p>
             <p className="mt-3 text-sm text-success">{item.delta} <span className="text-muted-foreground">vs last week</span></p>
@@ -395,8 +398,8 @@ export function AIJobsSection() {
           </Card>))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr]">
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <div className="grid gap-4 xl:grid-cols-[1.25fr_0.95fr] [&>*]:min-w-0">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle>Jobs Over Time</CardTitle>
@@ -413,7 +416,7 @@ export function AIJobsSection() {
             </Select>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ aiUsage: { label: "Jobs", color: "var(--color-chart-1)" } }} className="h-[300px]">
+            <ChartContainer config={{ aiUsage: { label: "Jobs", color: "var(--color-chart-1)" } }} className="h-[300px] w-full">
               <LineChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -425,16 +428,16 @@ export function AIJobsSection() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle>Jobs by Status</CardTitle>
               <CardDescription>This week</CardDescription>
             </div>
-            <Badge className="rounded-full bg-primary/12 text-primary">This Week</Badge>
+            <Badge className="rounded-full bg-primary/12 text-primary shrink-0">This Week</Badge>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ Completed: { label: "Completed", color: "var(--color-chart-1)" }, Processing: { label: "Processing", color: "var(--color-chart-3)" }, Failed: { label: "Failed", color: "var(--color-chart-5)" } }} className="h-[300px]">
+            <ChartContainer config={{ Completed: { label: "Completed", color: "var(--color-chart-1)" }, Processing: { label: "Processing", color: "var(--color-chart-3)" }, Failed: { label: "Failed", color: "var(--color-chart-5)" } }} className="h-[300px] w-full">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
                 <Pie data={[
@@ -484,14 +487,14 @@ export function AnalyticsSection() {
           </Card>))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <div className="grid gap-4 xl:grid-cols-2 [&>*]:min-w-0">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>Revenue Analytics</CardTitle>
             <CardDescription>Multi-series financial performance</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ revenue: { label: "Revenue", color: "var(--color-chart-1)" }, refunds: { label: "Refunds", color: "var(--color-chart-5)" } }} className="h-[320px]">
+            <ChartContainer config={{ revenue: { label: "Revenue", color: "var(--color-chart-1)" }, refunds: { label: "Refunds", color: "var(--color-chart-5)" } }} className="h-[320px] w-full">
               <BarChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -505,13 +508,13 @@ export function AnalyticsSection() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>Subscription & User Analytics</CardTitle>
             <CardDescription>Growth across active users and paid plans</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ users: { label: "Users", color: "var(--color-chart-2)" }, subscriptions: { label: "Subscriptions", color: "var(--color-chart-3)" } }} className="h-[320px]">
+            <ChartContainer config={{ users: { label: "Users", color: "var(--color-chart-2)" }, subscriptions: { label: "Subscriptions", color: "var(--color-chart-3)" } }} className="h-[320px] w-full">
               <LineChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -526,14 +529,14 @@ export function AnalyticsSection() {
         </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] [&>*]:min-w-0">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>AI Usage Analytics</CardTitle>
             <CardDescription>Credits and processing demand trends</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ aiUsage: { label: "AI Usage", color: "var(--color-chart-4)" }, upgrades: { label: "Upgrades", color: "var(--color-chart-1)" }, downgrades: { label: "Downgrades", color: "var(--color-chart-5)" } }} className="h-[320px]">
+            <ChartContainer config={{ aiUsage: { label: "AI Usage", color: "var(--color-chart-4)" }, upgrades: { label: "Upgrades", color: "var(--color-chart-1)" }, downgrades: { label: "Downgrades", color: "var(--color-chart-5)" } }} className="h-[320px] w-full">
               <BarChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -599,7 +602,7 @@ export function CMSSection() {
           </Card>))}
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr]">
+      <div className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr] [&>*]:min-w-0">
         <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
@@ -632,7 +635,7 @@ export function CMSSection() {
               <CardTitle>Content Overview</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={{ Pages: { label: "Pages", color: "var(--color-chart-2)" }, Blogs: { label: "Blogs", color: "var(--color-chart-1)" }, FAQs: { label: "FAQs", color: "var(--color-chart-3)" }, Banners: { label: "Banners", color: "var(--color-chart-4)" } }} className="h-[240px]">
+              <ChartContainer config={{ Pages: { label: "Pages", color: "var(--color-chart-2)" }, Blogs: { label: "Blogs", color: "var(--color-chart-1)" }, FAQs: { label: "FAQs", color: "var(--color-chart-3)" }, Banners: { label: "Banners", color: "var(--color-chart-4)" } }} className="h-[240px] w-full">
                 <PieChart>
                   <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
                   <Pie data={[
@@ -702,14 +705,14 @@ export function PaymentsSection() {
             </CardContent>
           </Card>))}
       </div>
-      <div className="grid gap-4 xl:grid-cols-[1.3fr_0.9fr_0.8fr]">
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <div className="grid gap-4 xl:grid-cols-[1.3fr_0.9fr_0.8fr] [&>*]:min-w-0">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>Revenue Overview</CardTitle>
             <CardDescription>$86,250 total revenue</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ revenue: { label: "Revenue", color: "var(--color-chart-1)" } }} className="h-[320px]">
+            <ChartContainer config={{ revenue: { label: "Revenue", color: "var(--color-chart-1)" } }} className="h-[320px] w-full">
               <LineChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -721,13 +724,13 @@ export function PaymentsSection() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>Payment Methods</CardTitle>
             <CardDescription>This week</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={{ Stripe: { label: "Stripe", color: "var(--color-chart-1)" }, PayPal: { label: "PayPal", color: "var(--color-chart-2)" }, Razorpay: { label: "Razorpay", color: "var(--color-chart-3)" }, Other: { label: "Other", color: "var(--color-chart-4)" } }} className="h-[320px]">
+            <ChartContainer config={{ Stripe: { label: "Stripe", color: "var(--color-chart-1)" }, PayPal: { label: "PayPal", color: "var(--color-chart-2)" }, Razorpay: { label: "Razorpay", color: "var(--color-chart-3)" }, Other: { label: "Other", color: "var(--color-chart-4)" } }} className="h-[320px] w-full">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
                 <Pie data={paymentMethodBreakdown} dataKey="value" nameKey="name" innerRadius={68} outerRadius={104}>
@@ -739,7 +742,7 @@ export function PaymentsSection() {
           </CardContent>
         </Card>
 
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
             <CardHeader>
               <CardTitle>Gateway Status</CardTitle>
@@ -822,8 +825,8 @@ export function SubscriptionSection() {
         { accessorKey: "amount", header: "Amount" },
     ], []);
     return (<div className="space-y-4">
-      <div className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr]">
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+      <div className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr] [&>*]:min-w-0">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle>Subscription Plans</CardTitle>
@@ -855,13 +858,13 @@ export function SubscriptionSection() {
           </CardContent>
         </Card>
 
-        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
+        <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70 overflow-hidden">
           <CardHeader>
             <CardTitle>Subscription Analytics</CardTitle>
             <CardDescription>Revenue and plan distribution</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pt-0">
-            <ChartContainer config={{ subscriptions: { label: "Growth", color: "var(--color-chart-1)" } }} className="h-[180px]">
+            <ChartContainer config={{ subscriptions: { label: "Growth", color: "var(--color-chart-1)" } }} className="h-[180px] w-full">
               <LineChart data={trendData}>
                 <CartesianGrid vertical={false} strokeDasharray="4 4"/>
                 <XAxis dataKey="name" tickLine={false} axisLine={false}/>
@@ -870,7 +873,7 @@ export function SubscriptionSection() {
                 <Line type="monotone" dataKey="subscriptions" stroke="var(--color-subscriptions)" strokeWidth={3} dot={false}/>
               </LineChart>
             </ChartContainer>
-            <ChartContainer config={{ Basic: { label: "Basic", color: "var(--color-chart-2)" }, Pro: { label: "Pro", color: "var(--color-chart-1)" }, Enterprise: { label: "Enterprise", color: "var(--color-chart-3)" } }} className="h-[220px]">
+            <ChartContainer config={{ Basic: { label: "Basic", color: "var(--color-chart-2)" }, Pro: { label: "Pro", color: "var(--color-chart-1)" }, Enterprise: { label: "Enterprise", color: "var(--color-chart-3)" } }} className="h-[220px] w-full">
               <PieChart>
                 <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
                 <Pie data={subscriptionBreakdown.slice(0, 3)} dataKey="value" nameKey="name" innerRadius={56} outerRadius={86}>

@@ -1,9 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/dashboard/app-shell";
 import { SupportSection } from "@/components/dashboard/dashboard-widgets";
-export const Route = createFileRoute("/support")({ component: SupportPage, head: () => ({ meta: [{ title: "Support — SmartLogix AI" }, { name: "description", content: "Support operations dashboard for SmartLogix AI." }] }) });
-function SupportPage() {
-    return <AppShell title="Support" subtitle="Track support operations, SLAs, and escalation queues."><SupportSection /></AppShell>;
+
+export default function SupportPage() {
+  return (
+    <AppShell title="Support" subtitle="Track support operations, SLAs, and escalation queues.">
+      <SupportSection />
+    </AppShell>
+  );
 }
-
-

@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, CalendarRange, ChevronDown, ChevronLeft, Command, Download, Menu, Moon, Search, Sparkles, SunMedium, } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,7 +11,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { cn } from "@/lib/utils";
 import { accountSummary, navItems, systemStatusCard } from "@/lib/dashboard-data";
 import { useDashboardStore } from "@/lib/dashboard-store";
-import { useAuth } from "@/hooks/useAuth";
 
 function SmartLogixMark({ collapsed }) {
   if (collapsed) {
@@ -188,21 +187,15 @@ function SidebarContent({ mobile = false }) {
 
 function TopBar({ title, subtitle, actions }) {
   const { theme, toggleTheme } = useDashboardStore();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const displayName = user?.username ?? accountSummary.adminName;
-  const displayRole = user?.email ?? accountSummary.adminRole;
-
-  async function handleLogout() {
-    await logout();
-    navigate({ to: "/login" });
-  }
+  const displayName = accountSummary.adminName;
+  const displayRole = accountSummary.adminRole;
 
   return (
     <header className="sticky top-0 z-30 mb-6 glass-panel rounded-[28px] px-4 py-4 sm:px-6">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-        <div className="flex items-start gap-3">
-          <div className="xl:hidden">
+      <div className="flex items-center justify-between gap-4">
+        {/* Left: mobile menu + title */}
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="xl:hidden shrink-0">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="rounded-2xl border-border/60 bg-card/50">
@@ -214,62 +207,62 @@ function TopBar({ title, subtitle, actions }) {
               </SheetContent>
             </Sheet>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground sm:text-4xl">{title}</h1>
-            <p className="mt-1 text-sm text-muted-foreground sm:text-base">{subtitle}</p>
+          <div className="min-w-0">
+            <h1 className="truncate text-2xl font-bold text-foreground sm:text-3xl">{title}</h1>
+            <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="glass-panel flex min-w-[260px] items-center gap-3 rounded-2xl px-4 py-3">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search anything..." className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0" />
-            <Badge variant="outline" className="rounded-xl border-border/60 bg-background/30 text-[10px] text-muted-foreground">
+        {/* Right: controls */}
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="glass-panel hidden lg:flex items-center gap-3 rounded-2xl px-4 py-2.5 w-[220px]">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <Input placeholder="Search..." className="h-auto border-0 bg-transparent p-0 shadow-none focus-visible:ring-0 text-sm" />
+            <Badge variant="outline" className="rounded-xl border-border/60 bg-background/30 text-[10px] text-muted-foreground shrink-0">
               <Command className="mr-1 h-3 w-3" />K
             </Badge>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="rounded-2xl border-border/60 bg-card/45">
-              <CalendarRange className="h-4 w-4" />
-              <span>May 13, 2025 - May 19, 2025</span>
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-2xl border-border/60 bg-card/45" onClick={toggleTheme}>
-              {theme === "dark" ? <SunMedium className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-            <Button variant="outline" size="icon" className="relative rounded-2xl border-border/60 bg-card/45">
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-primary" />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="h-12 rounded-2xl border-border/60 bg-card/45 px-3">
-                  <Avatar className="h-9 w-9 border border-border/60">
-                    <AvatarFallback className="brand-gradient text-primary-foreground">AU</AvatarFallback>
-                  </Avatar>
-                  <div className="hidden text-left sm:block">
-                    <p className="text-sm font-medium text-foreground">{displayName}</p>
-                    <p className="text-xs text-muted-foreground">{displayRole}</p>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="glass-panel w-56 rounded-2xl border-border/60 bg-popover/85 p-2">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Team settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={toggleTheme}>Toggle theme</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={handleLogout} className="text-destructive focus:text-destructive">
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button className="rounded-2xl px-5 shadow-[var(--shadow-glow)]">
-              <Download className="h-4 w-4" /> Export Report
-            </Button>
-          </div>
+          <Button variant="outline" className="hidden xl:flex rounded-2xl border-border/60 bg-card/45 text-sm">
+            <CalendarRange className="h-4 w-4" />
+            <span className="hidden 2xl:inline">May 13 – May 19, 2025</span>
+          </Button>
+
+          <Button variant="outline" size="icon" className="rounded-2xl border-border/60 bg-card/45" onClick={toggleTheme}>
+            {theme === "dark" ? <SunMedium className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
+
+          <Button variant="outline" size="icon" className="relative rounded-2xl border-border/60 bg-card/45">
+            <Bell className="h-4 w-4" />
+            <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-primary" />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-10 rounded-2xl border-border/60 bg-card/45 px-3 gap-2">
+                <Avatar className="h-7 w-7 border border-border/60">
+                  <AvatarFallback className="brand-gradient text-primary-foreground text-xs">AU</AvatarFallback>
+                </Avatar>
+                <div className="hidden text-left xl:block">
+                  <p className="text-sm font-medium text-foreground leading-none">{displayName}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{displayRole}</p>
+                </div>
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="glass-panel w-56 rounded-2xl border-border/60 bg-popover/85 p-2">
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Team settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={toggleTheme}>Toggle theme</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button className="rounded-2xl px-4 shadow-[var(--shadow-glow)] text-sm shrink-0">
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">Export Report</span>
+          </Button>
         </div>
       </div>
       {actions ? <div className="mt-4">{actions}</div> : null}
@@ -279,13 +272,6 @@ function TopBar({ title, subtitle, actions }) {
 
 export function AppShell({ title, subtitle, actions, children }) {
   const { theme, sidebarCollapsed } = useDashboardStore();
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  if (!isAuthenticated) {
-    navigate({ to: "/login" });
-    return null;
-  }
 
   return (
     <div className={cn("min-h-screen bg-background text-foreground", theme === "dark" ? "dark" : "")}>

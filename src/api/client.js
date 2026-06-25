@@ -16,7 +16,13 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message = error.response?.data?.message ?? error.message ?? "Request failed";
+    const data = error.response?.data;
+    const message =
+      data?.detail ??
+      data?.message ??
+      (typeof data === "string" ? data : null) ??
+      error.message ??
+      "Request failed";
     if (error.response?.status === 401) {
       localStorage.removeItem("smartlogix_access_token");
       localStorage.removeItem("smartlogix_refresh_token");

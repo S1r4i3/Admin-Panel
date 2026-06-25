@@ -1,28 +1,18 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthCard } from "@/components/auth/auth-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
-});
-
-function LoginPage() {
-  const { login, isAuthenticated } = useAuth();
+export default function LoginPage() {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Already logged in → go to dashboard
-  if (isAuthenticated) {
-    navigate({ to: "/" });
-    return null;
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,7 +20,7 @@ function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate({ to: "/" });
+      navigate("/");
     } catch (err) {
       setError(err.message ?? "Login failed. Check your credentials.");
     } finally {
@@ -68,9 +58,7 @@ function LoginPage() {
             autoComplete="current-password"
           />
         </div>
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
         <Button type="submit" className="w-full rounded-2xl" disabled={loading}>
           {loading ? "Signing in…" : "Sign in"}
         </Button>
