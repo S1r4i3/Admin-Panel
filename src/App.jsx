@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 import DashboardPage from "@/routes/index";
 import AccountsPage from "@/routes/accounts";
@@ -15,25 +16,34 @@ import SettingsPage from "@/routes/settings";
 import SubscriptionsPage from "@/routes/subscriptions";
 import SupportPage from "@/routes/support";
 import WebsitePage from "@/routes/website";
+import LoginPage from "@/routes/login";
+
+/** Redirects to /login when the user is not authenticated. */
+function ProtectedRoute({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
+}
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardPage />} />
-      <Route path="/accounts" element={<AccountsPage />} />
-      <Route path="/users" element={<UsersPage />} />
-      <Route path="/cms" element={<CMSPage />} />
-      <Route path="/ai-jobs" element={<AiJobsPage />} />
-      <Route path="/analytics" element={<AnalyticsPage />} />
-      <Route path="/api-keys" element={<ApiKeysPage />} />
-      <Route path="/credits" element={<CreditsPage />} />
-      <Route path="/notifications" element={<NotificationsPage />} />
-      <Route path="/payments" element={<PaymentsPage />} />
-      <Route path="/security" element={<SecurityPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/subscriptions" element={<SubscriptionsPage />} />
-      <Route path="/support" element={<SupportPage />} />
-      <Route path="/website" element={<WebsitePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/accounts" element={<ProtectedRoute><AccountsPage /></ProtectedRoute>} />
+      <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
+      <Route path="/cms" element={<ProtectedRoute><CMSPage /></ProtectedRoute>} />
+      <Route path="/ai-jobs" element={<ProtectedRoute><AiJobsPage /></ProtectedRoute>} />
+      <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
+      <Route path="/api-keys" element={<ProtectedRoute><ApiKeysPage /></ProtectedRoute>} />
+      <Route path="/credits" element={<ProtectedRoute><CreditsPage /></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+      <Route path="/payments" element={<ProtectedRoute><PaymentsPage /></ProtectedRoute>} />
+      <Route path="/security" element={<ProtectedRoute><SecurityPage /></ProtectedRoute>} />
+      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+      <Route path="/subscriptions" element={<ProtectedRoute><SubscriptionsPage /></ProtectedRoute>} />
+      <Route path="/support" element={<ProtectedRoute><SupportPage /></ProtectedRoute>} />
+      <Route path="/website" element={<ProtectedRoute><WebsitePage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

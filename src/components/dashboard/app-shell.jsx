@@ -9,8 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { accountSummary, navItems, systemStatusCard } from "@/lib/dashboard-data";
+import { navItems, systemStatusCard } from "@/lib/dashboard-data";
 import { useDashboardStore } from "@/lib/dashboard-store";
+import { useAuth } from "@/hooks/useAuth";
 
 function SmartLogixMark({ collapsed }) {
   if (collapsed) {
@@ -36,6 +37,7 @@ function SmartLogixMark({ collapsed }) {
 function SidebarContent({ mobile = false }) {
   const location = useLocation();
   const { sidebarCollapsed, toggleSidebar } = useDashboardStore();
+  const { user } = useAuth();
   const sections = Array.from(new Set(navItems.map((item) => item.section)));
 
   return (
@@ -174,8 +176,8 @@ function SidebarContent({ mobile = false }) {
             </Avatar>
             {(!sidebarCollapsed || mobile) && (
               <div className="min-w-0">
-                <p className="truncate font-medium text-foreground">{accountSummary.adminName}</p>
-                <p className="truncate text-sm text-muted-foreground">{accountSummary.email}</p>
+                <p className="truncate font-medium text-foreground">{user?.username ?? user?.email ?? "Admin"}</p>
+                <p className="truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
               </div>
             )}
           </div>
@@ -187,8 +189,9 @@ function SidebarContent({ mobile = false }) {
 
 function TopBar({ title, subtitle, actions }) {
   const { theme, toggleTheme } = useDashboardStore();
-  const displayName = accountSummary.adminName;
-  const displayRole = accountSummary.adminRole;
+  const { user, logout } = useAuth();
+  const displayName = user?.username ?? user?.email ?? "Admin";
+  const displayRole = user?.is_staff ? "Administrator" : "User";
 
   return (
     <header className="sticky top-0 z-30 mb-6 glass-panel rounded-[28px] px-4 py-4 sm:px-6">
@@ -256,6 +259,8 @@ function TopBar({ title, subtitle, actions }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={toggleTheme}>Toggle theme</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={logout} className="text-destructive focus:text-destructive">Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

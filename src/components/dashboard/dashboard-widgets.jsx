@@ -24,7 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { accountSummary, aiJobs, apiKeys, cmsSummary, contentRows, creditPurchases, formatCompactNumber, healthChecks, kpiStrip, metricCards, notifications, paymentMethodBreakdown, planCards, recentActivities, realtimeFeed, securityLogs, settingsTabs, subscriptionBreakdown, subscriptions, transactions, trendData, users, } from "@/lib/dashboard-data";
 import { cn } from "@/lib/utils";
-import { useAIJobs, useCMSContent, useDashboardData, useNotifications, usePlans, useSubscriptions, useTransactions, useUsers } from "@/services/dashboard";
+import { useAIJobs, useApiKeys, useCMSContent, useCredits, useDashboardData, useNotifications, usePlans, useSecurityLogs, useSubscriptions, useTransactions, useUsers } from "@/services/dashboard";
 function toneClasses(tone) {
     switch (tone) {
         case "primary":
@@ -1037,6 +1037,7 @@ const apiKeySchema = z.object({
     environment: z.string().min(1, "Environment is required"),
 });
 export function ApiKeysSection() {
+    const { data: apiKeysData = [] } = useApiKeys();
     const form = useForm({
         resolver: zodResolver(apiKeySchema),
         defaultValues: { name: "", environment: "Production" },
@@ -1074,7 +1075,7 @@ export function ApiKeysSection() {
           <CardDescription>Generate, revoke, and manage environment-scoped access keys.</CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable data={apiKeys} columns={columns}/>
+          <DataTable data={apiKeysData} columns={columns}/>
         </CardContent>
       </Card>
       <Card className="glass-panel rounded-[28px] border-border/60 bg-card/70">
@@ -1117,6 +1118,7 @@ export function ApiKeysSection() {
     </div>);
 }
 export function CreditsSection() {
+    const { data: creditData = [] } = useCredits();
     const columns = useMemo(() => [
         { accessorKey: "date", header: "Date" },
         { accessorKey: "package", header: "Package" },
@@ -1161,13 +1163,14 @@ export function CreditsSection() {
             <CardDescription>Recent credit top-ups and invoices</CardDescription>
           </CardHeader>
           <CardContent>
-            <DataTable data={creditPurchases} columns={columns}/>
+            <DataTable data={creditData} columns={columns}/>
           </CardContent>
         </Card>
       </div>
     </div>);
 }
 export function SecuritySection() {
+    const { data: securityData = [] } = useSecurityLogs();
     const columns = useMemo(() => [
         { accessorKey: "event", header: "Event" },
         { accessorKey: "detail", header: "Detail" },
@@ -1202,7 +1205,7 @@ export function SecuritySection() {
           <CardDescription>Recent admin and policy events</CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable data={securityLogs} columns={columns}/>
+          <DataTable data={securityData} columns={columns}/>
         </CardContent>
       </Card>
     </div>);

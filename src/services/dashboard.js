@@ -253,6 +253,25 @@ export function useCredits(params = {}) {
   });
 }
 
+// ─── Security Logs ───────────────────────────────────────────────────────────
+export function useSecurityLogs(params = {}) {
+  return useQuery({
+    queryKey: ["security-logs", params],
+    queryFn:  () => get("/api/security/logs/", params),
+    select:   (data) => {
+      const list = Array.isArray(data) ? data : data?.results ?? data;
+      return list.map((l) => ({
+        event:  l.event  ?? l.action,
+        detail: l.detail ?? l.details ?? l.description ?? "",
+        ip:     l.ip     ?? l.ip_address ?? "",
+        date:   l.date   ?? l.created_at ?? "",
+      }));
+    },
+    placeholderData: fallback.securityLogs,
+    staleTime: 30_000,
+  });
+}
+
 // ─── Generic mutations ────────────────────────────────────────────────────────
 export function useCreateResource(path, queryKey) {
   const queryClient = useQueryClient();
