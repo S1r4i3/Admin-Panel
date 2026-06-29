@@ -35,7 +35,9 @@ Step 2 - Configure backend URL
 
     target: "http://<BACKEND_IP>:8000"
 
-  Same machine  ->  http://localhost:8000
+  Same machine    ->  http://localhost:8000
+  Other laptop    ->  http://192.168.1.25:8000  (use actual IP)
+  Production URL  ->  https://backend.translive.ai
 
 Step 3 - Start the dev server
 

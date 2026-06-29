@@ -13,7 +13,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api": {
-        target: "http://192.168.1.25:8000",
+        target: "https://backend.translive.ai",
         changeOrigin: true,
         headers: {
           "ngrok-skip-browser-warning": "true",
